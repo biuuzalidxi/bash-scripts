@@ -1,0 +1,87 @@
+#!/bin/bash
+# for i in `ls`; do
+#     if [ -d $i ]; then
+#          echo $i
+#     fi
+# done
+
+function showhelp()
+{
+    echo "script para actualizar todas las carpetas ademas de hacer fetch o cambiar de ramas para todas las carpetas"
+    echo ""
+    exit 0
+}
+
+function pull_git()
+{
+    for i in `ls`; do
+        if [ -d $i ]; then
+            
+            echo "haciendo pull a $i"
+            cd $i
+            if git pull ;
+            then
+              echo "Se ha echo pull"
+            fi
+            cd ..
+        fi
+    done
+}
+
+function check_out_git()
+{      
+    branch=$1
+    for i in `ls`; do
+        if [ -d $i ]; then
+            echo "cambiando de rama $branch  en $i"
+            cd $i
+            git checkout $branch 
+            cd ..
+        fi
+    done
+}
+
+function fetch_git()
+{      
+   
+    for i in `ls`; do
+        if [ -d $i ]; then
+            echo "haciendo fetch para en $i"
+            cd $i
+            git fetch origin
+            cd ..
+        fi
+    done
+}
+
+while [ $# -ne 0 ]
+do
+    case "$1" in
+    -h|--help)        
+        showhelp
+        ;;
+    -p|--pull)
+        pull_git
+        shift
+        ;;
+    -c|--checkout)
+        if [ -z "$2" ] 
+        then
+            echo "se necesita una rama para cambiar"
+            exit 0
+        fi        
+        check_out_git $2
+        shift
+        ;;
+    -f|--fetch)
+        fetch_git
+        shift
+        ;;
+    *)
+        echo "Argumento no válido"
+        showhelp
+        ;;
+    esac
+    shift
+done
+
