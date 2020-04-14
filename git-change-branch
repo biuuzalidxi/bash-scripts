@@ -54,6 +54,32 @@ function fetch_git()
     done
 }
 
+function create_branch_git()
+{      
+    branch=$1
+    for i in `ls`; do
+        if [ -d $i ]; then
+            echo "creando rama $branch  en $i"
+            cd $i
+            git checkout -b $branch 
+            cd ..
+        fi
+    done
+}
+
+function push_branch_git()
+{      
+    branch=$1
+    for i in `ls`; do
+        if [ -d $i ]; then
+            echo "creando rama $branch  en $i"
+            cd $i
+            git push
+            cd ..
+        fi
+    done
+}
+
 while [ $# -ne 0 ]
 do
     case "$1" in
@@ -75,6 +101,14 @@ do
         ;;
     -f|--fetch)
         fetch_git
+        shift
+        ;;
+    -n|--new)
+        create_branch_git $2
+        shift
+        ;;
+    -p|--push)
+        create_branch_git $2
         shift
         ;;
     *)
